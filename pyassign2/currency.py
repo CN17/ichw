@@ -14,7 +14,7 @@ def get_information(currency_from, currency_to, amount_from):
     docstr = doc.read()
     doc.close()
     jstr = docstr.decode('ascii')
-    return url
+    return jstr
 
 def simplify(jstr):
     """simplify the string received"""
@@ -79,31 +79,57 @@ def exchange(currency_from, currency_to, amount_from):
     
 def main():
     """This is the main module"""
-    a = input('Currency from?')
-    b = input('Currency to?')
-    c = input('the amount of currency from?')
+    a = input('Currency from?\n')
+    b = input('Currency to?\n')
+    c = input('the amount of currency from?\n')
     print(exchange(a,b,c))
     
 def test_get_information():
     """Test the information asking function"""
-    a = get_information('USD','EUR','2.5')
-    assert(a == 'http://cs1110.cs.cornell.edu/2016fa/a1server.php?from=USD&to=EUR&amt=2.5')
+    a = get_information('USD','EUR','1')
+    assert(a == '{ "from" : "1 United States Dollar", "to" : "0.838095 Euros", "success" : true, "error" : "" }')
+    a = get_information('USD','CNY','1')
+    assert(a == '{ "from" : "1 United States Dollar", "to" : "6.52615 Chinese Yuan", "success" : true, "error" : "" }')
+    a = get_information('USD','BTC','1')
+    assert(a == '{ "from" : "1 United States Dollar", "to" : "0.00021745803 Bitcoins", "success" : true, "error" : "" }')
+    a = get_information('USD','RUB','1')
+    assert(a == '{ "from" : "1 United States Dollar", "to" : "57.5206 Russian Rubles", "success" : true, "error" : "" }')
+    a = get_information('USD','GBP','1')
+    assert(a == '{ "from" : "1 United States Dollar", "to" : "0.766307 British Pounds Sterling", "success" : true, "error" : "" }')
+    a = get_information('USD','SGD','1')
+    assert(a == '{ "from" : "1 United States Dollar", "to" : "1.3524 Singapore Dollars", "success" : true, "error" : "" }')
 
 def test_simplify():
     """Test the simplify procedure"""
-    a = simplify('{ "from" : "2.5 United States Dollars", "to" : "2.24075 Euros", "success" : true, "error" : "" }')
-    assert(a == ['from','2.5','United','States','Dollars','to','2.24075','Euros','success','true','error'])
+    a = simplify('{ "from" : "1 United States Dollars", "to" : "0.838095 Euros", "success" : true, "error" : "" }')
+    assert(a == ['from','1','United','States','Dollars','to','0.838095','Euros','success','true','error'])
 
 def test_extract():
     """Test the information extraction function"""
-    a = extract(['from','2.5','United','States','Dollars','to','2.24075','Euros','success','true','error'])
-    assert(a == '2.24075')
+    a = extract(['from','1','United','States','Dollars','to','0.838095','Euros','success','true','error'])
+    assert(a == '0.838095')
+    
+def test_exchange():
+    """Test all functions"""
+    a = exchange('USD','EUR','1')
+    assert(a == '0.838095')
+    a = exchange('USD','CNY','1')
+    assert(a == '6.52615')
+    a = exchange('USD','BTC','1')
+    assert(a == '0.00021745803')
+    a = exchange('USD','RUB','1')
+    assert(a == '57.5206')
+    a = exchange('USD','GBP','1')
+    assert(a == '0.766307')
+    a = exchange('USD','SGD','1')
+    assert(a == '1.3524')
     
 def testAll():
     """Test all cases"""
     test_get_information()
     test_simplify()
     test_extract()
+    test_exchange()
     print("All tests passed")
     
 if __name__ == '__main__':
