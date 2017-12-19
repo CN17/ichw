@@ -18,28 +18,24 @@ def wcount(lines, topn=10):
     lines = lines.lower()
     text = ''
     for ch in lines:
-        if ord(ch) >= 97 and ord(ch) <= 122:
+        if (ord(ch) >= 65 and ord(ch) <= 90) or (ord(ch) >= 97 and ord(ch) <= 122):
             text = text+ch
         else:
             text = text+' '
     text = text.split()
     dictionary = {}
     for word in text:
-        if word in dictionary:
-            dictionary[word] = dictionary[word]+1
-        else:
-            dictionary[word] = 1
-
-    new_dictionary = {}
-    for (u,v) in dictionary.items():
-        new_dictionary[v] = u
-    table = list(new_dictionary.keys())
-    table.sort(reverse = True)
+        if word not in dictionary:
+            dictionary[word] = text.count(word)  
+        else:                          
+            pass
+    table = zip(dictionary.values(),dictionary.keys())
+    table = sorted(table)
+    table.reverse()
     for i in range(topn):
-        k = new_dictionary[table[i]]
-        space = ' '*(10-len(k))
-        print('{}{}{}\n'.format(k,space,table[i]))
-        
+        (a,b) = table[i]
+        print('{}      {}\n'.format(a,b))
+    
 if __name__ == '__main__':
 
     if  len(sys.argv) == 1:
